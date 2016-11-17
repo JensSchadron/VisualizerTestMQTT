@@ -1,9 +1,13 @@
 package be.schadron.visualizertestmqtt;
 
+import android.util.Log;
+
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.util.Arrays;
 
 /**
  * Created by jenss on 16/11/2016.
@@ -13,12 +17,9 @@ public class MQTTClient implements FFTListener {
     private static final int LEDS_COUNT = 16;
     private static final int MAX_MDB = 50000;
 
-    private final static int MESSAGE_LENGTH = 32;
-    private final char[] possibleChars = {'-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-
     private final String topic = "matrixInfo";
     private final int qos = 0;
-    private final String broker = "tcp://192.168.1.9:1883";
+    private final String broker = "tcp://192.168.1.10:1883";
     private final String clientId = "AndroidFFTClient";
 
     private MqttClient client;
@@ -41,15 +42,19 @@ public class MQTTClient implements FFTListener {
 
     @Override
     public void onCalculationFinished(Band[] bands) {
-        StringBuilder strBuilder = new StringBuilder(MESSAGE_LENGTH);
+        byte[] byteArray = new byte[32];
         for (int i = 0; i < bands.length; i++) {
-            int level = (bands[i].getLevel() * LEDS_COUNT) / MAX_MDB;
-            strBuilder.append(possibleChars[level]);
+            int lvl = (bands[i].getLevel() * LEDS_COUNT) / MAX_MDB;
+            if (lvl == 0) {
+                byteArray[i] = 16;
+            } else {
+                byteArray[i] = (byte) --lvl;
+            }
         }
 
         try {
-            System.out.println("Publishing message: " + strBuilder.toString());
-            MqttMessage message = new MqttMessage(strBuilder.toString().getBytes());
+            System.out.println("Publishing message: " + Arrays.toString(byteArray));
+            MqttMessage message = new MqttMessage(byteArray);
             message.setQos(qos);
             client.publish(topic, message);
             System.out.println("Message published");
@@ -60,10 +65,19 @@ public class MQTTClient implements FFTListener {
             System.out.println("cause " + me.getCause());
             System.out.println("excep " + me);
             me.printStackTrace();
+            if(me.getReasonCode() == 32104){
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.w("MQTTClient", "Trying to reconnect");
+                        openConnection();
+                    }
+                }).start();
+            }
         }
     }
 
-    public void openConnection(){
+    public void openConnection() {
         try {
             System.out.println("Connecting to broker: " + broker);
             client.connect(connOpts);
