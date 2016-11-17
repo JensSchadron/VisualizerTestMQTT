@@ -1,5 +1,7 @@
 package be.schadron.visualizertestmqtt;
 
+import android.util.Log;
+
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -63,6 +65,15 @@ public class MQTTClient implements FFTListener {
             System.out.println("cause " + me.getCause());
             System.out.println("excep " + me);
             me.printStackTrace();
+            if(me.getReasonCode() == 32104){
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.w("MQTTClient", "Trying to reconnect");
+                        openConnection();
+                    }
+                }).start();
+            }
         }
     }
 
