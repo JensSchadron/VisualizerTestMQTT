@@ -5,6 +5,7 @@ android:
     - tools # to get the new `repository-11.xml`
     - tools # to install Android SDK tools 25.1.x (x = 6 right now)
     - platform-tools
+    - android-25
 
   licenses:
     - 'android-sdk-license-.+'
