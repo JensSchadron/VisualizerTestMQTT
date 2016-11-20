@@ -19,13 +19,17 @@ public class MQTTClient implements FFTListener {
 
     private final String topic = "matrixInfo";
     private final int qos = 0;
-    private final String broker = "tcp://192.168.1.10:1883";
+    private final String broker = "tcp://192.168.1.8:1883";
     private final String clientId = "AndroidFFTClient";
+    private byte[] previousPacket;
 
     private MqttClient client;
     private MqttConnectOptions connOpts;
 
-    public MQTTClient() {
+    private boolean enabled;
+
+    public MQTTClient(boolean enabled) {
+        this.enabled = enabled;
         try {
             client = new MqttClient(broker, clientId, null);
             connOpts = new MqttConnectOptions();
@@ -51,6 +55,10 @@ public class MQTTClient implements FFTListener {
                 byteArray[i] = (byte) --lvl;
             }
         }
+        if (Arrays.equals(previousPacket, byteArray)) {
+            System.out.println("Payload is equal, not sending packet.");
+            return;
+        }
 
         try {
             System.out.println("Publishing message: " + Arrays.toString(byteArray));
@@ -65,19 +73,22 @@ public class MQTTClient implements FFTListener {
             System.out.println("cause " + me.getCause());
             System.out.println("excep " + me);
             me.printStackTrace();
-            if(me.getReasonCode() == 32104){
+            if (me.getReasonCode() == 32104) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         Log.w("MQTTClient", "Trying to reconnect");
-                        openConnection();
+                        openConnection(false);
                     }
                 }).start();
             }
         }
+
+        previousPacket = byteArray;
     }
 
-    public void openConnection() {
+    public void openConnection(boolean forceStart){
+        enabled = forceStart;
         try {
             System.out.println("Connecting to broker: " + broker);
             client.connect(connOpts);
@@ -93,6 +104,7 @@ public class MQTTClient implements FFTListener {
     }
 
     public void closeConnection() {
+        enabled = false;
         try {
             client.disconnect();
             System.out.println("Disconnected");

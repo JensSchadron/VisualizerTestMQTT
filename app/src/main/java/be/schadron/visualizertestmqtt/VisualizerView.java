@@ -24,14 +24,7 @@ public class VisualizerView extends View implements View.OnLongClickListener, FF
     public VisualizerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setOnLongClickListener(this);
-    }
-
-    public void onResume() {
         setKeepScreenOn(true);
-    }
-
-    public void onPause() {
-
     }
 
     static {

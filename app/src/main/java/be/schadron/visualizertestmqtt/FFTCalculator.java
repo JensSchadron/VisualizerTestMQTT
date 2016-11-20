@@ -31,7 +31,7 @@ public class FFTCalculator implements Visualizer.OnDataCaptureListener {
             this.bands[i].setLevel(MAX_MDB);
         }
 
-        resumeCalculation();
+        startCalculation();
     }
 
     public void onFftDataCapture(Visualizer visualizer, byte[] fft, int samplingRate) {
@@ -60,12 +60,14 @@ public class FFTCalculator implements Visualizer.OnDataCaptureListener {
     public void onWaveFormDataCapture(Visualizer visualizer, byte[] waveform, int samplingRate) {
     }
 
-    void pauseCalculation(){
-        this.visualizer.setEnabled(false);
-        this.visualizer.release();
+    void stopCalculation(){
+        if(this.visualizer.getEnabled()) {
+            this.visualizer.setEnabled(false);
+            this.visualizer.release();
+        }
     }
 
-    void resumeCalculation(){
+    void startCalculation(){
         this.visualizer = new Visualizer(BACKGROUND);
         this.visualizer.setEnabled(false);
         this.visualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
