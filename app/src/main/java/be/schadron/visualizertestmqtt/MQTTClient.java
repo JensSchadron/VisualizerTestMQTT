@@ -6,6 +6,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
 
 import java.util.Arrays;
 
@@ -31,7 +32,7 @@ public class MQTTClient implements FFTListener {
     public MQTTClient(boolean enabled) {
         this.enabled = enabled;
         try {
-            client = new MqttClient(broker, clientId, null);
+            client = new MqttClient(broker, clientId, new MqttDefaultFilePersistence());
             connOpts = new MqttConnectOptions();
             connOpts.setCleanSession(true);
         } catch (MqttException me) {
@@ -89,17 +90,19 @@ public class MQTTClient implements FFTListener {
 
     public void openConnection(boolean forceStart){
         enabled = forceStart;
-        try {
-            System.out.println("Connecting to broker: " + broker);
-            client.connect(connOpts);
-            System.out.println("Connected");
-        } catch (MqttException me) {
-            System.out.println("reason " + me.getReasonCode());
-            System.out.println("msg " + me.getMessage());
-            System.out.println("loc " + me.getLocalizedMessage());
-            System.out.println("cause " + me.getCause());
-            System.out.println("excep " + me);
-            me.printStackTrace();
+        if(!client.isConnected() & enabled) {
+            try {
+                System.out.println("Connecting to broker: " + broker);
+                client.connect(connOpts);
+                System.out.println("Connected");
+            } catch (MqttException me) {
+                System.out.println("reason " + me.getReasonCode());
+                System.out.println("msg " + me.getMessage());
+                System.out.println("loc " + me.getLocalizedMessage());
+                System.out.println("cause " + me.getCause());
+                System.out.println("excep " + me);
+                me.printStackTrace();
+            }
         }
     }
 
