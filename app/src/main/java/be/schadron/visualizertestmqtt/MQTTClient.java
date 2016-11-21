@@ -6,6 +6,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.util.Arrays;
 
@@ -31,7 +32,7 @@ class MQTTClient implements FFTListener {
     MQTTClient(boolean enabled) {
         this.enabled = enabled;
         try {
-            client = new MqttClient(broker, clientId);
+            client = new MqttClient(broker, clientId, new MemoryPersistence());
             connOpts = new MqttConnectOptions();
             connOpts.setCleanSession(true);
         } catch (MqttException me) {

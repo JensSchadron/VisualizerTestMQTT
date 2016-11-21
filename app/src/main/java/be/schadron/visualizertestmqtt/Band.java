@@ -25,7 +25,7 @@ class Band {
         levelMax = 0.0d;
     }
 
-    void setLevel(int levelNew) {
+    void setLevel(@SuppressWarnings("SameParameterValue") int levelNew) {
         this.level = levelNew;
     }
 

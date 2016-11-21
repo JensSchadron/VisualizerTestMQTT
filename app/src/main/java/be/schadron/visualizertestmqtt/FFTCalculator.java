@@ -13,7 +13,7 @@ class FFTCalculator implements Visualizer.OnDataCaptureListener {
     private static final int FFT_CHANNELS = 32;
     private static final int LED_LEVEL = 2;
     private static final int MAX_MDB = 50000;
-    private Band[] bands;
+    private final Band[] bands;
     private int captureSize;
     private float logMax;
     private Visualizer visualizer;
