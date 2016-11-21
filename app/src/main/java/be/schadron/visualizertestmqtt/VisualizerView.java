@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
- * Created by jenss on 16/11/2016.
+ * This class gives a visual representation of the FFT data
  */
 
 public class VisualizerView extends View implements View.OnLongClickListener, FFTListener {

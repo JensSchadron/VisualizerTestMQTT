@@ -28,13 +28,13 @@
             android:id="@+id/general"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="General" />
+            android:text="@string/swtgeneral" />
 
         <Switch
             android:id="@+id/mqtt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MQTT" />
+            android:text="@string/swtmqtt" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -4,4 +4,6 @@
     <string name="preference_filename">VisualisationPreferces</string>
     <string name="generalSwitchState">GeneralSwitchState</string>
     <string name="mqttSwitchState">MQTTSwitchState</string>
+    <string name="swtgeneral">General</string>
+    <string name="swtmqtt">MQTT</string>
 </resources>
