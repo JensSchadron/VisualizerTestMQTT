@@ -85,6 +85,7 @@ class FFTCalculator implements Visualizer.OnDataCaptureListener {
         listeners.remove(listener);
     }
 
+    @SuppressWarnings("unused")
     void destroyListeners() {
         listeners = new ArrayList<>();
     }
