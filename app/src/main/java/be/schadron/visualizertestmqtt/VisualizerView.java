@@ -48,7 +48,10 @@ public class VisualizerView extends View implements View.OnLongClickListener, FF
         return true;
     }
 
+    @Override
     public void draw(Canvas canvas) {
+        super.draw(canvas);
+
         canvas.drawColor(Color.WHITE);
         if (this.bands == null)
             return;
