@@ -13,6 +13,10 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
+    lintOptions {
+        disable
+        disable 'Typos', 'TypographyDashes', 'TypographyEllipsis', 'TypographyFractions', 'TypographyOther', 'TypographyQuotes'
+    }
     buildTypes {
         release {
             minifyEnabled false
