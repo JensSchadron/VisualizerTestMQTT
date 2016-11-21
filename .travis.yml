@@ -5,9 +5,13 @@ android:
     - tools # to get the new `repository-11.xml`
     - tools # to install Android SDK tools 25.1.x (x = 6 right now)
     - platform-tools
+    - build-tools-24.0.1
+    - extra-android-m2repository
+    - android-25
 
   licenses:
     - 'android-sdk-license-.+'
 
 before_script:
+
   - chmod +x gradlew
