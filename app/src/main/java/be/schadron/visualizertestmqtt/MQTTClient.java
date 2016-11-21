@@ -6,22 +6,21 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.util.Arrays;
 
 /**
- * Created by jenss on 16/11/2016.
+ * This class is used to publish the FFT data on a MQTT Queue
  */
 
-public class MQTTClient implements FFTListener {
+class MQTTClient implements FFTListener {
     private static final int LEDS_COUNT = 16;
     private static final int MAX_MDB = 50000;
 
-    private final String topic = "matrixInfo";
-    private final int qos = 0;
-    private final String broker = "tcp://192.168.1.8:1883";
-    private final String clientId = "AndroidFFTClient";
+    private final static String topic = "matrixInfo";
+    private final static int qos = 0;
+    private final static String broker = "tcp://192.168.1.8:1883";
+    private final static String clientId = "AndroidFFTClient";
     private byte[] previousPacket;
 
     private MqttClient client;
@@ -29,10 +28,10 @@ public class MQTTClient implements FFTListener {
 
     private boolean enabled;
 
-    public MQTTClient(boolean enabled) {
+    MQTTClient(boolean enabled) {
         this.enabled = enabled;
         try {
-            client = new MqttClient(broker, clientId, new MemoryPersistence());
+            client = new MqttClient(broker, clientId);
             connOpts = new MqttConnectOptions();
             connOpts.setCleanSession(true);
         } catch (MqttException me) {
@@ -88,7 +87,7 @@ public class MQTTClient implements FFTListener {
         previousPacket = byteArray;
     }
 
-    public void openConnection(boolean forceStart){
+    void openConnection(boolean forceStart){
         enabled = forceStart;
         if(!client.isConnected() & enabled) {
             try {
@@ -106,7 +105,7 @@ public class MQTTClient implements FFTListener {
         }
     }
 
-    public void closeConnection() {
+    void closeConnection() {
         enabled = false;
         try {
             client.disconnect();

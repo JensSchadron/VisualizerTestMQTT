@@ -1,20 +1,20 @@
 package be.schadron.visualizertestmqtt;
 
 /**
- * Created by jenss on 16/11/2016.
+ * Represents a band
  */
 
-public class Band {
-    public static final int FALL_SPEED = 1500;
-    public static final double NOISE_LEVEL = 0.699999988079071d;
-    public static final int PEAK_TIME = 30;
+class Band {
+    private static final int FALL_SPEED = 1500;
+    private static final double NOISE_LEVEL = 0.699999988079071d;
+    private static final int PEAK_TIME = 30;
     private static double levelMax;
     private int level;
     private double levelAnalog;
     private int levelPeak;
     private int topTime;
 
-    public Band() {
+    Band() {
         this.levelAnalog = 0.0d;
         this.level = 0;
         this.levelPeak = 0;
@@ -25,18 +25,18 @@ public class Band {
         levelMax = 0.0d;
     }
 
-    public void setLevel(int levelNew) {
+    void setLevel(int levelNew) {
         this.level = levelNew;
     }
 
-    public void add(byte levelR, byte levelI) {
+    void add(byte levelR, byte levelI) {
         double levelAnalogNew = Math.sqrt((double) ((levelR * levelR) + (levelI * levelI)));
         if (levelAnalogNew > this.levelAnalog) {
             this.levelAnalog = levelAnalogNew;
         }
     }
 
-    public void calculate() {
+    void calculate() {
         int levelNew = 0;
         if (this.levelAnalog > NOISE_LEVEL) {
             levelNew = (int) (20000.0d * Math.log10(this.levelAnalog - NOISE_LEVEL));
@@ -69,11 +69,11 @@ public class Band {
         this.levelAnalog = 0.0d;
     }
 
-    public int getLevel() {
+    int getLevel() {
         return this.level;
     }
 
-    public int getLevelPeak() {
+    int getLevelPeak() {
         return this.levelPeak;
     }
 }

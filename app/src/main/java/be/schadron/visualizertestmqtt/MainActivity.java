@@ -7,8 +7,6 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 
 public class MainActivity extends Activity {
-    private SharedPreferences sp;
-
     private VisualizerView visualizerView;
     private MQTTClient mqttClient;
     private FFTCalculator calculator;

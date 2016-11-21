@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">VisualizerTestMQTT</string>
-    <string name="service_name">VisualizerService</string>
 
     <string name="preference_filename">VisualisationPreferces</string>
     <string name="generalSwitchState">GeneralSwitchState</string>

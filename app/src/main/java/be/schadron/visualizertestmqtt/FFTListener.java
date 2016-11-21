@@ -1,9 +1,9 @@
 package be.schadron.visualizertestmqtt;
 
 /**
- * Created by jenss on 16/11/2016.
+ * An interface that is being implemented by classes which want to listen to the FFTCalculator
  */
 
-public interface FFTListener {
+interface FFTListener {
     void onCalculationFinished(Band[] bands);
 }

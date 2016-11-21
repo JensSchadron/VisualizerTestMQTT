@@ -5,10 +5,10 @@ import android.media.audiofx.Visualizer;
 import java.util.ArrayList;
 
 /**
- * Created by jenss on 16/11/2016.
+ * This class calculates the FFT and notifies the listeners
  */
 
-public class FFTCalculator implements Visualizer.OnDataCaptureListener {
+class FFTCalculator implements Visualizer.OnDataCaptureListener {
     private static final int BACKGROUND = 0;
     private static final int FFT_CHANNELS = 32;
     private static final int LED_LEVEL = 2;
@@ -20,7 +20,7 @@ public class FFTCalculator implements Visualizer.OnDataCaptureListener {
 
     private ArrayList<FFTListener> listeners;
 
-    public FFTCalculator() {
+    FFTCalculator() {
         listeners = new ArrayList<>();
 
         this.bands = new Band[FFT_CHANNELS];
@@ -81,11 +81,11 @@ public class FFTCalculator implements Visualizer.OnDataCaptureListener {
         listeners.add(listener);
     }
 
-    public void removeListener(FFTListener listener) {
+    void removeListener(FFTListener listener) {
         listeners.remove(listener);
     }
 
-    public void destroyListeners() {
+    void destroyListeners() {
         listeners = new ArrayList<>();
     }
 }
