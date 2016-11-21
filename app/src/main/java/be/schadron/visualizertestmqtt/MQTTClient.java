@@ -20,7 +20,7 @@ class MQTTClient implements FFTListener {
 
     private final static String topic = "matrixInfo";
     private final static int qos = 0;
-    private final static String broker = "tcp://192.168.1.8:1883";
+    private final static String broker = "tcp://192.168.1.3:1883";
     private final static String clientId = "AndroidFFTClient";
     private byte[] previousPacket;
 

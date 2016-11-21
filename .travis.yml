@@ -15,5 +15,8 @@ android:
 before_script:
   - chmod +x gradlew
 
+script:
+  -  ./gradlew build
+
 after_failure:
   - cat /home/travis/build/JensSchadron/VisualizerTestMQTT/app/build/outputs/lint-results-debug.html
