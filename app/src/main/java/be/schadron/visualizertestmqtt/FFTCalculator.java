@@ -31,7 +31,7 @@ class FFTCalculator implements Visualizer.OnDataCaptureListener {
             this.bands[i].setLevel(MAX_MDB);
         }
 
-        startCalculation();
+        //startCalculation();
     }
 
     public void onFftDataCapture(Visualizer visualizer, byte[] fft, int samplingRate) {

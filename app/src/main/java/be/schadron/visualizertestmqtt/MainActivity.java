@@ -1,8 +1,12 @@
 package be.schadron.visualizertestmqtt;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
@@ -14,6 +18,8 @@ public class MainActivity extends Activity {
     private boolean generalEnabled;
     private boolean mqttEnabled;
 
+    private final static int PERMISSION_REQUEST_RECORD_AUDIO = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +28,21 @@ public class MainActivity extends Activity {
         SharedPreferences sp = getSharedPreferences(getString(R.string.preference_filename), MODE_PRIVATE);
         generalEnabled = sp.getBoolean(getString(R.string.generalSwitchState), true);
         mqttEnabled = sp.getBoolean(getString(R.string.mqttSwitchState), true);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (PackageManager.PERMISSION_GRANTED != checkSelfPermission(Manifest.permission.RECORD_AUDIO)) {
+                //TODO https://developer.android.com/training/permissions/requesting.html
+                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_REQUEST_RECORD_AUDIO);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+
+
+            }
+        }
+
 
         this.calculator = new FFTCalculator();
         this.visualizerView = (VisualizerView) findViewById(R.id.spectrumView);
@@ -92,5 +113,28 @@ public class MainActivity extends Activity {
         }
 
         super.onResume();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_RECORD_AUDIO: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.wtf("Main", "Is it really granted?");
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+                    Log.wtf("Main", "Why are you so mean? :'(");
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 }

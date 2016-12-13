@@ -20,7 +20,8 @@ class MQTTClient implements FFTListener {
 
     private final static String topic = "matrixInfo";
     private final static int qos = 0;
-    private final static String broker = "tcp://192.168.1.3:1883";
+//    private final static String broker = "tcp://192.168.2.104:1883";
+    private final static String broker = "tcp://vanlooverenkoen.be:1884";
     private final static String clientId = "AndroidFFTClient";
     private byte[] previousPacket;
 
@@ -28,9 +29,11 @@ class MQTTClient implements FFTListener {
     private MqttConnectOptions connOpts;
 
     private boolean enabled;
+    private long millisThreshhold;
 
     MQTTClient(boolean enabled) {
         this.enabled = enabled;
+        millisThreshhold = System.currentTimeMillis();
         try {
             client = new MqttClient(broker, clientId, new MemoryPersistence());
             connOpts = new MqttConnectOptions();
@@ -47,45 +50,47 @@ class MQTTClient implements FFTListener {
 
     @Override
     public void onCalculationFinished(Band[] bands) {
-        byte[] byteArray = new byte[32];
-        for (int i = 0; i < bands.length; i++) {
-            int lvl = (bands[i].getLevel() * LEDS_COUNT) / MAX_MDB;
-            if (lvl == 0) {
-                byteArray[i] = 16;
-            } else {
-                byteArray[i] = (byte) --lvl;
+        if(System.currentTimeMillis() > millisThreshhold) {
+            byte[] byteArray = new byte[32];
+            for (int i = 0; i < bands.length; i++) {
+                int lvl = (bands[i].getLevel() * LEDS_COUNT) / MAX_MDB;
+                if (lvl == 0) {
+                    byteArray[i] = 16;
+                } else {
+                    byteArray[i] = (byte) --lvl;
+                }
             }
-        }
-        if (Arrays.equals(previousPacket, byteArray)) {
-            System.out.println("Payload is equal, not sending packet.");
-            return;
-        }
-
-        try {
-            System.out.println("Publishing message: " + Arrays.toString(byteArray));
-            MqttMessage message = new MqttMessage(byteArray);
-            message.setQos(qos);
-            client.publish(topic, message);
-            System.out.println("Message published");
-        } catch (MqttException me) {
-            System.out.println("reason " + me.getReasonCode());
-            System.out.println("msg " + me.getMessage());
-            System.out.println("loc " + me.getLocalizedMessage());
-            System.out.println("cause " + me.getCause());
-            System.out.println("excep " + me);
-            me.printStackTrace();
-            if (me.getReasonCode() == 32104) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.w("MQTTClient", "Trying to reconnect");
-                        openConnection(false);
-                    }
-                }).start();
+            if (Arrays.equals(previousPacket, byteArray)) {
+                System.out.println("Payload is equal, not sending packet.");
+                return;
             }
-        }
 
-        previousPacket = byteArray;
+            try {
+                System.out.println("Publishing message: " + Arrays.toString(byteArray));
+                MqttMessage message = new MqttMessage(byteArray);
+                message.setQos(qos);
+                client.publish(topic, message);
+                System.out.println("Message published");
+            } catch (MqttException me) {
+                System.out.println("reason " + me.getReasonCode());
+                System.out.println("msg " + me.getMessage());
+                System.out.println("loc " + me.getLocalizedMessage());
+                System.out.println("cause " + me.getCause());
+                System.out.println("excep " + me);
+                me.printStackTrace();
+                if (me.getReasonCode() == 32104) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.w("MQTTClient", "Trying to reconnect");
+                            openConnection(false);
+                        }
+                    }).start();
+                }
+            }
+            previousPacket = byteArray;
+            millisThreshhold = System.currentTimeMillis() + 80;
+        }
     }
 
     void openConnection(boolean forceStart){
